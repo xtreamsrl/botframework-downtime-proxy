@@ -1,2 +1,2 @@
-# botframework-downtime-proxy
-An Azure function that can be used in Azure Channel Registration to distract the user from downstream bot downtimes
+# Bot Framework Downtime Proxy
+An Azure deployable Function that can be used in Azure Channel Registration as endpoint and redirects inbound traffic to a downstream Bot Framework engine (that can run as an App Service instance, for example). This is particularly useful for experimental and R&D bots that cannot afford a reliable production configuration for the bot, yet they still need a way to notify users when the bot is temporarily down - which happens a lot for free App Service plans. 
