@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -21,7 +23,7 @@ namespace Proxy.Tests
             mockUserService.Setup(u => u.WaitFeedbackReply(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            var logger = (ListLogger)TestFactory.CreateLogger(LoggerTypes.List);
+            var logger = (ListLogger)CreateLogger(LoggerTypes.List);
             var request = new DefaultHttpContext().Request;
             var proxy = new Proxy(mockUserService.Object);
 
@@ -43,7 +45,7 @@ namespace Proxy.Tests
             mockUserService.Setup(u => u.WaitFeedbackReply(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            var logger = (ListLogger)TestFactory.CreateLogger(LoggerTypes.List);
+            var logger = (ListLogger)CreateLogger(LoggerTypes.List);
             var request = new DefaultHttpContext().Request;
             var proxy = new Proxy(mockUserService.Object);
 
@@ -65,7 +67,7 @@ namespace Proxy.Tests
             mockUserService.Setup(u => u.WaitFeedbackReply(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            var logger = (ListLogger)TestFactory.CreateLogger(LoggerTypes.List);
+            var logger = (ListLogger)CreateLogger(LoggerTypes.List);
             var request = new DefaultHttpContext().Request;
             var proxy = new Proxy(mockUserService.Object);
 
@@ -83,7 +85,7 @@ namespace Proxy.Tests
             mockUserService.Setup(u => u.BotRedirect(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
 
-            var logger = (ListLogger)TestFactory.CreateLogger(LoggerTypes.List);
+            var logger = (ListLogger)CreateLogger(LoggerTypes.List);
             var request = new DefaultHttpContext().Request;
             var proxy = new Proxy(mockUserService.Object);
 
@@ -102,13 +104,22 @@ namespace Proxy.Tests
             mockUserService.Setup(u => u.WaitFeedbackReply(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            var logger = (ListLogger)TestFactory.CreateLogger(LoggerTypes.List);
+            var logger = (ListLogger)CreateLogger(LoggerTypes.List);
             var request = new DefaultHttpContext().Request;
             var proxy = new Proxy(mockUserService.Object);
 
             await proxy.RunAsync(request, logger);
-            
+
             Assert.Empty(logger.Logs);
+        }
+
+        private static ILogger CreateLogger(LoggerTypes type = LoggerTypes.Null)
+        {
+            var logger = type == LoggerTypes.List
+                ? new ListLogger()
+                : NullLoggerFactory.Instance.CreateLogger("Null Logger");
+
+            return logger;
         }
     }
 }
