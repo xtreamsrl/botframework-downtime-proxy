@@ -23,7 +23,7 @@ namespace Proxy
         Task<BotToken> GetBotAuthenticationToken();
 
         /// <summary>
-        /// It gives the message
+        /// It redirects the request to the bot.
         /// </summary>
         /// <param name="headers">The request headers</param>
         /// <param name="requestBody">The request body</param>
